@@ -69,28 +69,16 @@ class MyWidgetState extends State<MyWidget> {
     final background = RepeatedImage(_imageMap["assets/images/starfield.png"]!);
     rootNode.addChild(background);
 
-    // final lightsaber =
-    //     Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
-    // lightsaber.position = const Offset(160, 540);
-
-    // final lightsaber =
-    //     Sprite.fromImage(_imageMap["assets/images/lightsaber-on.png"]!);
-    // lightsaber.position = const Offset(160, 340);
-
-    // rootNode.addChild(lightsaber);
-
-    return Stack(
-      children: const [
-        Image(
-          image: AssetImage('assets/images/starfield.png'),
-          fit: BoxFit.fill,
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/starfield.png"),
+            fit: BoxFit.cover,
+          ),
         ),
-        // SpriteWidget(
-        //   rootNode,
-        //   transformMode: SpriteBoxTransformMode.fixedWidth,
-        // ),
-        LaserDisplay(),
-      ],
+        child: const LaserDisplay(),
+      ),
     );
   }
 }
