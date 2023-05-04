@@ -38,6 +38,7 @@ dependencies:
   spritewidget: ^2.0.1
   audioplayers: ^4.0.1
   sensors_plus: ^2.0.5
+  torch_light: ^1.0.0
 
 dev_dependencies:
   flutter_test:
