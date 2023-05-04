@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:lightsaber_may_4/repeated_image.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:spritewidget/spritewidget.dart';
 
 late ImageMap _imageMap;
@@ -60,10 +64,32 @@ class MyWidget extends StatefulWidget {
 class MyWidgetState extends State<MyWidget> {
   late NodeWithSize rootNode;
   bool isLightsaberOn = false;
+  final _streamSubscriptions = <StreamSubscription<dynamic>>[];
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (final subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _streamSubscriptions.add(
+      userAccelerometerEvents.listen(
+        (UserAccelerometerEvent event) async {
+          var speed = sqrt(pow(event.x, 2) + pow(event.y, 2) + pow(event.z, 2));
+          if (speed > 3 && isLightsaberOn) {
+            await lightsaberSoundsPlayer
+                .play(AssetSource("sounds/lightsaber-hum.wav"));
+          }
+        },
+      ),
+    );
+
     double scale = 1;
 
     rootNode = NodeWithSize(Size(320.0 * scale, 320.0 * scale));
