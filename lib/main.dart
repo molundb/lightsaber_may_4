@@ -80,12 +80,16 @@ class MyWidgetState extends State<MyWidget> {
     // rootNode.addChild(lightsaber);
 
     return Stack(
-      children: [
+      children: const [
+        Image(
+          image: AssetImage('assets/images/starfield.png'),
+          fit: BoxFit.fill,
+        ),
         // SpriteWidget(
         //   rootNode,
         //   transformMode: SpriteBoxTransformMode.fixedWidth,
         // ),
-        const LaserDisplay(),
+        LaserDisplay(),
       ],
     );
   }
@@ -107,28 +111,33 @@ class LaserDisplay extends StatelessWidget {
 }
 
 class Lightsaber extends NodeWithSize {
-  Lightsaber() : super(const Size(320.0, 320.0)) {
+  Sprite lightsaber =
+      Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
+
+  Lightsaber() : super(const Size(288.0, 288.0)) {
     userInteractionEnabled = true;
     // Node placementNode = Node();
     // placementNode.position = const Offset(8.0, 8.0);
     // placementNode.scale = 0.7;
     // addChild(placementNode);
-    final lightsaber =
-        Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
-    // lightsaber.position = const Offset(160, 160);
+    lightsaber.position = const Offset(144, 400);
     addChild(lightsaber);
   }
 
   @override
   handleEvent(SpriteBoxEvent event) {
     if (event.type == PointerEventType.down) {
-      // TODO: Turn on lightsaber
-      print('martin turn on');
-
+      removeChild(lightsaber);
+      lightsaber =
+          Sprite.fromImage(_imageMap["assets/images/lightsaber-on.png"]!);
+      lightsaber.position = const Offset(144, 149);
+      addChild(lightsaber);
     } else if (event.type == PointerEventType.up) {
-      // TODO: Turn off lightsaber
-      print('martin turn off');
-
+      removeChild(lightsaber);
+      lightsaber =
+          Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
+      lightsaber.position = const Offset(144, 400);
+      addChild(lightsaber);
     }
 
     return true;
