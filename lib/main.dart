@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:lightsaber_may_4/repeated_image.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:spritewidget/spritewidget.dart';
 import 'package:torch_light/torch_light.dart';
@@ -28,59 +27,47 @@ main() async {
     'assets/images/lightsaber-on.png',
   ]);
 
-  lightsaberOpenPlayer.setPlaybackRate(1.2);
   lightsaberOpenPlayer.setReleaseMode(ReleaseMode.stop);
   lightsaberOpenPlayer.setSourceAsset("sounds/lightsaber-open.wav");
+  lightsaberOpenPlayer.setPlaybackRate(1.2);
+  lightsaberOpenPlayer.setVolume(0.1);
 
-  lightsaberClosePlayer.setPlaybackRate(1.2);
   lightsaberClosePlayer.setReleaseMode(ReleaseMode.stop);
   lightsaberClosePlayer.setSourceAsset("sounds/lightsaber-close.wav");
+  lightsaberClosePlayer.setPlaybackRate(1.2);
+  lightsaberClosePlayer.setVolume(0.1);
 
-  lightsaberHumPlayer.setPlaybackRate(1);
   lightsaberHumPlayer.setReleaseMode(ReleaseMode.stop);
   lightsaberHumPlayer.setSourceAsset("sounds/lightsaber-hum.wav");
+  lightsaberHumPlayer.setPlaybackRate(1);
 
-  lightsaberHum2Player.setPlaybackRate(1);
   lightsaberHum2Player.setReleaseMode(ReleaseMode.stop);
   lightsaberHum2Player.setSourceAsset("sounds/lightsaber-hum.wav");
+  lightsaberHum2Player.setPlaybackRate(1);
 
-  runApp(const MyApp());
+  runApp(const MyLightsaberApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyLightsaberApp extends StatelessWidget {
+  const MyLightsaberApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyWidget(),
+    return const MaterialApp(
+      title: 'Epic Lightsaber',
+      home: Lightsaber(),
     );
   }
 }
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+class Lightsaber extends StatefulWidget {
+  const Lightsaber({super.key});
 
   @override
-  MyWidgetState createState() => MyWidgetState();
+  LightsaberState createState() => LightsaberState();
 }
 
-class MyWidgetState extends State<MyWidget> {
-  late NodeWithSize rootNode;
+class LightsaberState extends State<Lightsaber> {
   bool isLightsaberOn = false;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   int humPosition = 0;
@@ -122,17 +109,10 @@ class MyWidgetState extends State<MyWidget> {
         },
       ),
     );
-
-    double scale = 1;
-
-    rootNode = NodeWithSize(Size(320.0 * scale, 320.0 * scale));
   }
 
   @override
   Widget build(BuildContext context) {
-    final background = RepeatedImage(_imageMap["assets/images/starfield.png"]!);
-    rootNode.addChild(background);
-
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -215,54 +195,5 @@ class MyWidgetState extends State<MyWidget> {
     } on Exception catch (_) {
       //
     }
-  }
-}
-
-class LaserDisplay extends StatelessWidget {
-  const LaserDisplay({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 320.0,
-        height: 320.0,
-        child: SpriteWidget(Lightsaber()),
-      ),
-    );
-  }
-}
-
-class Lightsaber extends NodeWithSize {
-  Sprite lightsaber =
-      Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
-
-  Lightsaber() : super(const Size(288.0, 288.0)) {
-    userInteractionEnabled = true;
-    // Node placementNode = Node();
-    // placementNode.position = const Offset(8.0, 8.0);
-    // placementNode.scale = 0.7;
-    // addChild(placementNode);
-    lightsaber.position = const Offset(144, 400);
-    addChild(lightsaber);
-  }
-
-  @override
-  handleEvent(SpriteBoxEvent event) {
-    if (event.type == PointerEventType.down) {
-      removeChild(lightsaber);
-      lightsaber =
-          Sprite.fromImage(_imageMap["assets/images/lightsaber-on.png"]!);
-      lightsaber.position = const Offset(144, 149);
-      addChild(lightsaber);
-    } else if (event.type == PointerEventType.up) {
-      removeChild(lightsaber);
-      lightsaber =
-          Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
-      lightsaber.position = const Offset(144, 400);
-      addChild(lightsaber);
-    }
-
-    return true;
   }
 }
