@@ -55,6 +55,7 @@ class MyWidget extends StatefulWidget {
 
 class MyWidgetState extends State<MyWidget> {
   late NodeWithSize rootNode;
+  bool isLightsaberOn = false;
 
   @override
   void initState() {
@@ -84,20 +85,44 @@ class MyWidgetState extends State<MyWidget> {
                 left: MediaQuery.of(context).size.width / 2 - 24,
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
-                  child: Image.asset(
-                    "assets/images/lightsaber-off-2.png",
-                    fit: BoxFit.cover,
-                  ),
+                  child: isLightsaberOn
+                      ? Image.asset(
+                          "assets/images/lightsaber-on.png",
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          "assets/images/lightsaber-off-2.png",
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               Positioned(
                 bottom: 0,
                 left: MediaQuery.of(context).size.width / 2 - 24,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: Image.asset(
-                    "assets/images/lightsaber-on.png",
-                    fit: BoxFit.cover,
+                child: GestureDetector(
+                  onTapDown: (_) {
+                    setState(() {
+                      isLightsaberOn = true;
+                    });
+                  },
+                  onTapUp: (_) {
+                    setState(() {
+                      isLightsaberOn = false;
+                    });
+                  },
+                  // TODO: Figure out smoother experience
+                  onTapCancel: () {
+                    setState(() {
+                      isLightsaberOn = false;
+                    });
+                  },
+                  child: Container(
+                    height: 200.0,
+                    width: 52.0,
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                    child: Container(),
                   ),
                 ),
               ),
