@@ -71,14 +71,39 @@ class MyWidgetState extends State<MyWidget> {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/starfield.png"),
-            fit: BoxFit.cover,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/starfield.png"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: const LaserDisplay(),
-      ),
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                left: MediaQuery.of(context).size.width / 2 - 24,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Image.asset(
+                    "assets/images/lightsaber-off-2.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: MediaQuery.of(context).size.width / 2 - 24,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Image.asset(
+                    "assets/images/lightsaber-on.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              // const LaserDisplay(),
+            ],
+          )),
     );
   }
 }
