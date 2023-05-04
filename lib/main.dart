@@ -1,8 +1,10 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:lightsaber_may_4/repeated_image.dart';
 import 'package:spritewidget/spritewidget.dart';
 
 late ImageMap _imageMap;
+AudioPlayer lightsaberSoundsPlayer = AudioPlayer();
 
 main() async {
   // We need to call ensureInitialized if we are loading images before runApp
@@ -17,6 +19,8 @@ main() async {
     'assets/images/lightsaber-off.png',
     'assets/images/lightsaber-on.png',
   ]);
+
+  lightsaberSoundsPlayer.setPlaybackRate(1.2);
 
   runApp(const MyApp());
 }
@@ -100,22 +104,16 @@ class MyWidgetState extends State<MyWidget> {
                 bottom: 0,
                 left: MediaQuery.of(context).size.width / 2 - 24,
                 child: GestureDetector(
-                  onTapDown: (_) {
+                  onTapDown: (_) async {
                     setState(() {
                       isLightsaberOn = true;
                     });
+                    await lightsaberSoundsPlayer
+                        .play(AssetSource('sounds/lightsaber-open.wav'));
                   },
-                  onTapUp: (_) {
-                    setState(() {
-                      isLightsaberOn = false;
-                    });
-                  },
+                  onTapUp: (_) => closeLightsaber(),
                   // TODO: Figure out smoother experience
-                  onTapCancel: () {
-                    setState(() {
-                      isLightsaberOn = false;
-                    });
-                  },
+                  onTapCancel: () => closeLightsaber(),
                   child: Container(
                     height: 200.0,
                     width: 52.0,
@@ -130,6 +128,14 @@ class MyWidgetState extends State<MyWidget> {
             ],
           )),
     );
+  }
+
+  Future<void> closeLightsaber() async {
+    setState(() {
+      isLightsaberOn = false;
+    });
+    await lightsaberSoundsPlayer
+        .play(AssetSource('sounds/lightsaber-close.wav'));
   }
 }
 
