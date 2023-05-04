@@ -69,15 +69,68 @@ class MyWidgetState extends State<MyWidget> {
     final background = RepeatedImage(_imageMap["assets/images/starfield.png"]!);
     rootNode.addChild(background);
 
+    // final lightsaber =
+    //     Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
+    // lightsaber.position = const Offset(160, 540);
+
+    // final lightsaber =
+    //     Sprite.fromImage(_imageMap["assets/images/lightsaber-on.png"]!);
+    // lightsaber.position = const Offset(160, 340);
+
+    // rootNode.addChild(lightsaber);
+
+    return Stack(
+      children: [
+        // SpriteWidget(
+        //   rootNode,
+        //   transformMode: SpriteBoxTransformMode.fixedWidth,
+        // ),
+        const LaserDisplay(),
+      ],
+    );
+  }
+}
+
+class LaserDisplay extends StatelessWidget {
+  const LaserDisplay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: 320.0,
+        height: 320.0,
+        child: SpriteWidget(Lightsaber()),
+      ),
+    );
+  }
+}
+
+class Lightsaber extends NodeWithSize {
+  Lightsaber() : super(const Size(320.0, 320.0)) {
+    userInteractionEnabled = true;
+    // Node placementNode = Node();
+    // placementNode.position = const Offset(8.0, 8.0);
+    // placementNode.scale = 0.7;
+    // addChild(placementNode);
     final lightsaber =
         Sprite.fromImage(_imageMap["assets/images/lightsaber-off.png"]!);
-    lightsaber.position = const Offset(160, 540);
-    
-    rootNode.addChild(lightsaber);
+    // lightsaber.position = const Offset(160, 160);
+    addChild(lightsaber);
+  }
 
-    return SpriteWidget(
-      rootNode,
-      transformMode: SpriteBoxTransformMode.fixedWidth,
-    );
+  @override
+  handleEvent(SpriteBoxEvent event) {
+    if (event.type == PointerEventType.down) {
+      // TODO: Turn on lightsaber
+      print('martin turn on');
+
+    } else if (event.type == PointerEventType.up) {
+      // TODO: Turn off lightsaber
+      print('martin turn off');
+
+    }
+
+    return true;
   }
 }

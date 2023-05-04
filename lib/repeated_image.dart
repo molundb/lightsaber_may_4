@@ -20,6 +20,8 @@ class RepeatedImage extends Node {
       _sprite1.blendMode = mode;
     }
 
+
+
     addChild(_sprite0);
     addChild(_sprite1);
   }
