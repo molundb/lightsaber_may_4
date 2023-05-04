@@ -30,12 +30,12 @@ main() async {
   lightsaberOpenPlayer.setReleaseMode(ReleaseMode.stop);
   lightsaberOpenPlayer.setSourceAsset("sounds/lightsaber-open.wav");
   lightsaberOpenPlayer.setPlaybackRate(1.2);
-  lightsaberOpenPlayer.setVolume(0.1);
+  lightsaberOpenPlayer.setVolume(0.75);
 
   lightsaberClosePlayer.setReleaseMode(ReleaseMode.stop);
   lightsaberClosePlayer.setSourceAsset("sounds/lightsaber-close.wav");
   lightsaberClosePlayer.setPlaybackRate(1.2);
-  lightsaberClosePlayer.setVolume(0.1);
+  lightsaberClosePlayer.setVolume(0.75);
 
   lightsaberHumPlayer.setReleaseMode(ReleaseMode.stop);
   lightsaberHumPlayer.setSourceAsset("sounds/lightsaber-hum.wav");
