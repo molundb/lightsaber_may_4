@@ -8,7 +8,10 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'package:spritewidget/spritewidget.dart';
 
 late ImageMap _imageMap;
-AudioPlayer lightsaberSoundsPlayer = AudioPlayer();
+AudioPlayer lightsaberOpenPlayer = AudioPlayer();
+AudioPlayer lightsaberClosePlayer = AudioPlayer();
+AudioPlayer lightsaberHumPlayer = AudioPlayer();
+AudioPlayer lightsaberHum2Player = AudioPlayer();
 
 main() async {
   // We need to call ensureInitialized if we are loading images before runApp
@@ -24,7 +27,21 @@ main() async {
     'assets/images/lightsaber-on.png',
   ]);
 
-  lightsaberSoundsPlayer.setPlaybackRate(1.2);
+  lightsaberOpenPlayer.setPlaybackRate(1.2);
+  lightsaberOpenPlayer.setReleaseMode(ReleaseMode.stop);
+  lightsaberOpenPlayer.setSourceAsset("sounds/lightsaber-open.wav");
+
+  lightsaberClosePlayer.setPlaybackRate(1.2);
+  lightsaberClosePlayer.setReleaseMode(ReleaseMode.stop);
+  lightsaberClosePlayer.setSourceAsset("sounds/lightsaber-close.wav");
+
+  lightsaberHumPlayer.setPlaybackRate(1);
+  lightsaberHumPlayer.setReleaseMode(ReleaseMode.stop);
+  lightsaberHumPlayer.setSourceAsset("sounds/lightsaber-hum.wav");
+
+  lightsaberHum2Player.setPlaybackRate(1);
+  lightsaberHum2Player.setReleaseMode(ReleaseMode.stop);
+  lightsaberHum2Player.setSourceAsset("sounds/lightsaber-hum.wav");
 
   runApp(const MyApp());
 }
@@ -65,6 +82,7 @@ class MyWidgetState extends State<MyWidget> {
   late NodeWithSize rootNode;
   bool isLightsaberOn = false;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
+  int humPosition = 0;
 
   @override
   void dispose() {
@@ -77,15 +95,22 @@ class MyWidgetState extends State<MyWidget> {
   @override
   void initState() {
     super.initState();
+    lightsaberHumPlayer.onPositionChanged.listen((event) {
+      humPosition = event.inMilliseconds;
+    });
 
     _streamSubscriptions.add(
       userAccelerometerEvents.listen(
         (UserAccelerometerEvent event) async {
           var speed = sqrt(pow(event.x, 2) + pow(event.y, 2) + pow(event.z, 2));
-          if (speed > 3 && isLightsaberOn) {
-            await lightsaberSoundsPlayer
-                .play(AssetSource("sounds/lightsaber-hum.wav"));
+          if (speed > 4 && isLightsaberOn) {
+            await lightsaberHumPlayer.resume();
+
+            if (humPosition > 600) {
+              await lightsaberHum2Player.resume();
+            }
           }
+          if (speed > 5 && isLightsaberOn) {}
         },
       ),
     );
@@ -134,8 +159,7 @@ class MyWidgetState extends State<MyWidget> {
                     setState(() {
                       isLightsaberOn = true;
                     });
-                    await lightsaberSoundsPlayer
-                        .play(AssetSource('sounds/lightsaber-open.wav'));
+                    await lightsaberOpenPlayer.resume();
                   },
                   onTapUp: (_) => closeLightsaber(),
                   // TODO: Figure out smoother experience
@@ -160,8 +184,9 @@ class MyWidgetState extends State<MyWidget> {
     setState(() {
       isLightsaberOn = false;
     });
-    await lightsaberSoundsPlayer
-        .play(AssetSource('sounds/lightsaber-close.wav'));
+    await lightsaberClosePlayer.resume();
+    await lightsaberHumPlayer.stop();
+    await lightsaberHum2Player.stop();
   }
 }
 
