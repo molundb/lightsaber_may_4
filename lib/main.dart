@@ -83,6 +83,7 @@ class MyWidgetState extends State<MyWidget> {
   bool isLightsaberOn = false;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   int humPosition = 0;
+  int hum2Position = 0;
 
   @override
   void dispose() {
@@ -99,14 +100,20 @@ class MyWidgetState extends State<MyWidget> {
       humPosition = event.inMilliseconds;
     });
 
+    lightsaberHum2Player.onPositionChanged.listen((event) {
+      hum2Position = event.inMilliseconds;
+    });
+
     _streamSubscriptions.add(
       userAccelerometerEvents.listen(
         (UserAccelerometerEvent event) async {
           var speed = sqrt(pow(event.x, 2) + pow(event.y, 2) + pow(event.z, 2));
           if (speed > 4 && isLightsaberOn) {
-            await lightsaberHumPlayer.resume();
+            if (humPosition == 0) {
+              await lightsaberHumPlayer.resume();
+            }
 
-            if (humPosition > 600) {
+            if (humPosition > 600 && hum2Position == 0) {
               await lightsaberHum2Player.resume();
             }
           }
@@ -162,7 +169,7 @@ class MyWidgetState extends State<MyWidget> {
                     await lightsaberOpenPlayer.resume();
                   },
                   onTapUp: (_) => closeLightsaber(),
-                  // TODO: Figure out smoother experience
+                  // TODO: Improve touch/tap experience
                   onTapCancel: () => closeLightsaber(),
                   child: Container(
                     height: 200.0,
