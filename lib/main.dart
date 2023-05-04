@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:lightsaber_may_4/repeated_image.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:spritewidget/spritewidget.dart';
+import 'package:torch_light/torch_light.dart';
 
 late ImageMap _imageMap;
 AudioPlayer lightsaberOpenPlayer = AudioPlayer();
@@ -167,10 +168,12 @@ class MyWidgetState extends State<MyWidget> {
                       isLightsaberOn = true;
                     });
                     await lightsaberOpenPlayer.resume();
+
+                    await _enableTorch();
                   },
-                  onTapUp: (_) => closeLightsaber(),
+                  onTapUp: (_) => _closeLightsaber(),
                   // TODO: Improve touch/tap experience
-                  onTapCancel: () => closeLightsaber(),
+                  onTapCancel: () => _closeLightsaber(),
                   child: Container(
                     height: 200.0,
                     width: 52.0,
@@ -187,13 +190,31 @@ class MyWidgetState extends State<MyWidget> {
     );
   }
 
-  Future<void> closeLightsaber() async {
+  Future<void> _closeLightsaber() async {
     setState(() {
       isLightsaberOn = false;
     });
     await lightsaberClosePlayer.resume();
     await lightsaberHumPlayer.stop();
     await lightsaberHum2Player.stop();
+
+    await _disableTorch();
+  }
+
+  Future<void> _enableTorch() async {
+    try {
+      await TorchLight.enableTorch();
+    } on Exception catch (_) {
+      //
+    }
+  }
+
+  Future<void> _disableTorch() async {
+    try {
+      await TorchLight.disableTorch();
+    } on Exception catch (_) {
+      //
+    }
   }
 }
 
